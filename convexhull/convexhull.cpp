@@ -65,8 +65,8 @@ bool notequal(point a, point b, point c, point d) {
 }
 
 vector<point> enumerate(vector<point> &Q) {
-    ofstream fout;
-    fout.open("log.txt");
+    /* ofstream fout; */
+    /* fout.open("log.txt"); */
     vector<point> S;
     int convexhull[Q.size()];
     for (int i = 0; i < Q.size(); i++) {
@@ -107,21 +107,11 @@ vector<point> enumerate(vector<point> &Q) {
         }
         i++;
     }
-    fout.close();
+    /* fout.close(); */
     for (int i = 0; i < Q.size(); i++) {
         if (convexhull[i]) S.push_back(Q[i]);
     }
     return S;
-}
-
-vector<point> gen_data(int count) {
-    srand((int)time(NULL));
-    vector<point> Q;
-    for (int i = 0; i < count; i++) {
-        point q = {rand()%100, rand()%100};
-        Q.push_back(q);
-    }
-    return Q;
 }
 
 int get_miny(vector<point> &Q) {
@@ -162,27 +152,48 @@ void sort(vector<point> &Q) {
     }
 }
 
+void print(vector<point> Q) {
+    for (int i = 0; i < Q.size(); i++) {
+        std::cout << "(" << Q[i].x << "," << Q[i].y << ")" << std::endl;
+    }
+}
+
+
 vector<point> graham_scan(vector<point> &Q) {
     vector<point> S;
     sort(Q);
+    /* std::cout << "sorted Q:" << std::endl; */
+    /* print(Q); */
     int j = 1;
-    while (crossproduct(pminus(Q[j], Q[0]), pminus(Q[j+1], Q[j])) == 0) {
+    while (j < Q.size()-1 && crossproduct(pminus(Q[j], Q[0]), pminus(Q[j+1], Q[j])) == 0) {
+        // std::cout << j << std::endl;
         j++;
+    }
+    /* std::cout << j << std::endl; */
+    if (j == Q.size()-1) {
+        S.push_back(Q[0]);
+        S.push_back(Q[j]);
+        /* std::cout << "S in graham_scan:" << std::endl; */
+        /* print(S); */
+        return S;
     }
     S.push_back(Q[0]);
     S.push_back(Q[j]);
     S.push_back(Q[j+1]);
-    for (int i = 3; i < Q.size(); i++) {
+    for (int i = j+2; i < Q.size(); i++) {
         while (crossproduct(pminus(S[S.size()-1], S[S.size()-2]),
                     pminus(Q[i], S[S.size()-1])) <= 0) {
             S.pop_back();
         }
         S.push_back(Q[i]);
     }
+    // print(S);
     return S;
 }
 
 int partition(vector<point> &Q, int start, int end, int k) {
+    int index = rand()%(end-start+1) + start;
+    swap(Q[index], Q[end]);
     int pivot = Q[end].x;
     int j = start - 1;
     for (int i = start; i < end; i++) {
@@ -203,18 +214,37 @@ int partition(vector<point> &Q, int start, int end, int k) {
 
 vector<point> merge(vector<point> &CH1, vector<point> &CH2) {
     CH1.insert(CH1.end(), CH2.begin(), CH2.end());
+    // std::cout << "union of CH1 and CH2:" << std::endl;
+    // print(CH1);
     return graham_scan(CH1);
 }
 
+
 vector<point> convexhull(vector<point> &Q, int start, int end) {
-    if (end - start < 3) {
-        vector<point> S(Q.begin()+start, Q.begin()+end+1);
+    // std::cout << start << "," << end << std::endl;
+    if (end - start + 1 <= 3) {
+        // std::cout << "|S| <= 3 return S" << std::endl;
+        vector<point> S;
+        for (int i = start; i <= end; i++) S.push_back(Q[i]);
         return S;
     }
     int p = partition(Q, start, end, (end - start + 1)/2);
     vector<point> CH1 = convexhull(Q, start, p);
+    /* std::cout << "CH1:" << std::endl; */
+    /* print(CH1); */
     vector<point> CH2 = convexhull(Q, p+1, end);
+    /* std::cout << "CH2:" << std::endl; */
+    /* print(CH2); */
     return merge(CH1, CH2);
+}
+
+vector<point> gen_data(int count) {
+    vector<point> Q;
+    for (int i = 0; i < count; i++) {
+        point q = {rand()%100, rand()%100};
+        Q.push_back(q);
+    }
+    return Q;
 }
 
 void test(int type, int count) {
@@ -246,15 +276,15 @@ void test(int type, int count) {
             cout << "Total Time:" << time << "s, S's size : " << S.size() << endl;
             break;
         case 4:
-            S = enumerate(Q);
-            sort(S);
-            std::cout << "convexhul size: " << S.size() << std::endl;
-            fout.open("point1.txt");
-            for (int i = 0; i < S.size(); i++) {
-                // std::cout << "(" << S[i].x << "," << S[i].y << ")" << std::endl;
-                fout << "(" << S[i].x << "," << S[i].y << ")" << endl;
-            }
-            fout.close();
+           /*  S = enumerate(Q); */
+            // sort(S);
+            // std::cout << "convexhul size: " << S.size() << std::endl;
+            // fout.open("point1.txt");
+            // for (int i = 0; i < S.size(); i++) {
+                // // std::cout << "(" << S[i].x << "," << S[i].y << ")" << std::endl;
+                // fout << "(" << S[i].x << "," << S[i].y << ")" << endl;
+            /* } */
+            // fout.close();
             S = graham_scan(Q);
             sort(S);
             std::cout << "convexhul size: " << S.size() << std::endl;
@@ -279,6 +309,7 @@ void test(int type, int count) {
 
 int main(int argc, const char *argv[])
 {
+    srand((int)time(NULL));
     /* point A = {2, 0}; */
     /* point B = {-1, 1}; */
     // point C = {-1, 0};
@@ -320,7 +351,7 @@ int main(int argc, const char *argv[])
     // for (int i = 0; i < S.size(); i++) {
         // std::cout << S[i].x << "," << S[i].y << std::endl;
     /* } */
-    test(4, 100);
+    test(4, 2000);
     // gen_data(10);
     return 0;
 }

@@ -286,21 +286,21 @@ void test(int type, int count) {
             /* } */
             // fout.close();
             S = graham_scan(Q);
-            sort(S);
+            // sort(S);
             std::cout << "convexhul size: " << S.size() << std::endl;
-            fout.open("point2.txt");
-            for (int i = 0; i < S.size(); i++) {
-                fout << "(" << S[i].x << "," << S[i].y << ")" << endl;
-            }
-            fout.close();
+            /* fout.open("point2.txt"); */
+            // for (int i = 0; i < S.size(); i++) {
+                // fout << "(" << S[i].x << "," << S[i].y << ")" << endl;
+            // }
+            /* fout.close(); */
             S = convexhull(Q, 0, Q.size()-1);
-            sort(S);
+            // sort(S);
             std::cout << "convexhul size: " << S.size() << std::endl;
-            fout.open("point3.txt");
-            for (int i = 0; i < S.size(); i++) {
-                fout << "(" << S[i].x << "," << S[i].y << ")" << endl;
-            }
-            fout.close();
+            /* fout.open("point3.txt"); */
+            // for (int i = 0; i < S.size(); i++) {
+                // fout << "(" << S[i].x << "," << S[i].y << ")" << endl;
+            // }
+            /* fout.close(); */
             break;
         default:
             std::cout << "invalid input" << std::endl;
@@ -351,7 +351,7 @@ int main(int argc, const char *argv[])
     // for (int i = 0; i < S.size(); i++) {
         // std::cout << S[i].x << "," << S[i].y << std::endl;
     /* } */
-    test(4, 2000);
+    test(4, 3000);
     // gen_data(10);
     return 0;
 }

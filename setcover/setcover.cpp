@@ -221,6 +221,12 @@ vector<vector<int> > lp_sc(vector<int> X, vector<vector<int> > F) {
     return C;
 }
 
+/**
+ * type : 1, greedy algorithm
+ *        2, linear programing
+ *        3, compare and show
+ * count : the number of X and F
+ */
 void test(int type, int count) {
     vector<int> X = gen_x(count);
     vector<vector<int> > F = gen_data(X, count), C;
@@ -240,6 +246,40 @@ void test(int type, int count) {
             end = clock();
             time = (double)(end - start)/CLOCKS_PER_SEC;
             std::cout << "Total Time: " << time << "s, C's size : " << C.size() << std::endl;
+            break;
+        case 3:
+            std::cout << "------------------------------------------------------------------" << std::endl;
+            std::cout << "greedy algorithm for set cover:" << std::endl;
+            start = clock();
+            C = greedy_sc(X, F);
+            end = clock();
+            time = (double)(end - start)/CLOCKS_PER_SEC;
+            std::cout << "Total Time: " << time << "s, C's size : " << C.size() << std::endl;
+            std::cout << "C size:" << C.size() << std::endl;
+            for (int i = 0; i < C.size(); i++) {
+                vector<int> c = C[i];
+                std::cout << "C" << i << " size " << c.size() << std::endl;
+                for (int j = 0; j < c.size(); j++) {
+                    std::cout << c[j] << " ";
+                }
+                std::cout << std::endl;
+            }
+            std::cout << "------------------------------------------------------------------" << std::endl;
+            std::cout << "linear programing for set cover" << std::endl;
+            start = clock();
+            C = lp_sc(X, F);
+            end = clock();
+            time = (double)(end - start)/CLOCKS_PER_SEC;
+            std::cout << "Total Time: " << time << "s, C's size : " << C.size() << std::endl;
+            std::cout << "C size:" << C.size() << std::endl;
+            for (int i = 0; i < C.size(); i++) {
+                vector<int> c = C[i];
+                std::cout << "C" << i << " size " << c.size() << std::endl;
+                for (int j = 0; j < c.size(); j++) {
+                    std::cout << c[j] << " ";
+                }
+                std::cout << std::endl;
+            }
             break;
         default:
             std::cout << "invalid input" << std::endl;
@@ -297,6 +337,6 @@ int main(int argc, const char *argv[])
     // it = find(S.begin(), S.end(), 35);
     /* std::cout << *it << std::endl; */
     // std::cout << glp_version() << std::endl;
-    test(1, 1000);
+    test(3, 200);
     return 0;
 }

@@ -41,13 +41,20 @@ int randint32()
 {
     return (rand()<<17)|(rand()<<2)|(rand());
 }
-void int32test(int count, bool type)
+
+/**
+ * 32 bit randonm integer test
+ * count : the size of number
+ * stl : true, c++ stl sort
+ *       false, quicksort
+ */
+void int32test(int count, bool stl)
 {
     vector<int> v;
     for (int i = 0; i < count; i++) {
         v.push_back(randint32());
     }
-    if (type) {
+    if (!stl) {
         clock_t start = clock();
         quicksort(v, 0, count-1);
         clock_t end = clock();
@@ -66,13 +73,19 @@ void int32test(int count, bool type)
     cout << endl;
 }
 
-void all1test(int count, bool type)
+/**
+ * all 1 test
+ * count : the size of number
+ * stl : true, c++ stl sort
+ *       false, quicksort
+ */
+void all1test(int count, bool stl)
 {
     vector<int> v;
     for (int i = 0; i < count; i++) {
         v.push_back(1);
     }
-    if (type) {
+    if (!stl) {
         clock_t start = clock();
         quicksort(v, 0, count-1);
         clock_t end = clock();
@@ -91,7 +104,15 @@ void all1test(int count, bool type)
     cout << endl;
 }
 
-void x1test(int count, int x, bool type)
+
+/**
+ * x percents 1 test
+ * count : the size of number
+ * x : percents of 1
+ * stl : true, c++ stl sort
+ *       false, quicksort
+ */
+void x1test(int count, int x, bool stl)
 {
     vector<int> v;
     int pivot = count/100*x;
@@ -102,7 +123,7 @@ void x1test(int count, int x, bool type)
             v.push_back(randint32());
         }
     }
-    if (type) {
+    if (!stl) {
         clock_t start = clock();
         quicksort(v, 0, count-1);
         clock_t end = clock();

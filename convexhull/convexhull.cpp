@@ -42,6 +42,11 @@ bool intrain(point a, point b, point c, point d) {
     return cp1*cp2 >= 0 && cp1*cp3 >= 0;
 }
 
+/**
+ * return : true, a, b and c are not collinear
+ *                or, a, b, and c are collinear and a is between b and c
+ *          false, a, b and c are collinear, and a is the endpoint
+ */
 bool notline(point a, point b, point c) {
     point p = pminus(b, a);
     point q = pminus(c, a);
@@ -165,7 +170,7 @@ vector<point> graham_scan(vector<point> &Q) {
     /* std::cout << "sorted Q:" << std::endl; */
     /* print(Q); */
     int j = 1;
-    while (j < Q.size()-1 && crossproduct(pminus(Q[j], Q[0]), pminus(Q[j+1], Q[j])) == 0) {
+    while (j < Q.size()-1 && crossproduct(pminus(Q[j], Q[0]), pminus(Q[j+1], Q[j])) == 0) { // handle the situiation that the first j points and collinear
         // std::cout << j << std::endl;
         j++;
     }
@@ -247,6 +252,14 @@ vector<point> gen_data(int count) {
     return Q;
 }
 
+/**
+ * type : 1, enumerate
+ *        2, graham_scan
+ *        3, convexhull(divide and conquer)
+ *        4, verify the correctness of three algorithms, output to the file and display by python
+ * count : the number of vertex
+ *
+ */
 void test(int type, int count) {
     vector<point> Q = gen_data(count);
     vector<point> S;
@@ -276,31 +289,49 @@ void test(int type, int count) {
             cout << "Total Time:" << time << "s, S's size : " << S.size() << endl;
             break;
         case 4:
-           /*  S = enumerate(Q); */
-            // sort(S);
-            // std::cout << "convexhul size: " << S.size() << std::endl;
-            // fout.open("point1.txt");
-            // for (int i = 0; i < S.size(); i++) {
-                // // std::cout << "(" << S[i].x << "," << S[i].y << ")" << std::endl;
-                // fout << "(" << S[i].x << "," << S[i].y << ")" << endl;
-            /* } */
-            // fout.close();
+            std::cout << "----------------------------------------------------------" << std::endl;
+            std::cout << "enumerate for convexhull" << std::endl;
+            start = clock();
+            S = enumerate(Q);
+            end = clock();
+            time = (double)(end - start)/CLOCKS_PER_SEC;
+            std::cout << "Total Time:" << time << std::endl;
+            sort(S);
+            std::cout << "convexhull size: " << S.size() << std::endl;
+            fout.open("point1.txt");
+            for (int i = 0; i < S.size(); i++) {
+                // std::cout << "(" << S[i].x << "," << S[i].y << ")" << std::endl;
+                fout << "(" << S[i].x << "," << S[i].y << ")" << endl;
+            }
+            fout.close();
+            std::cout << "----------------------------------------------------------" << std::endl;
+            std::cout << "graham_scan for convexhull" << std::endl;
+            start = clock();
             S = graham_scan(Q);
-            // sort(S);
-            std::cout << "convexhul size: " << S.size() << std::endl;
-            /* fout.open("point2.txt"); */
-            // for (int i = 0; i < S.size(); i++) {
-                // fout << "(" << S[i].x << "," << S[i].y << ")" << endl;
-            // }
-            /* fout.close(); */
+            end = clock();
+            time = (double)(end - start)/CLOCKS_PER_SEC;
+            std::cout << "Total Time:" << time << std::endl;
+            sort(S);
+            std::cout << "convexhull size: " << S.size() << std::endl;
+            fout.open("point2.txt");
+            for (int i = 0; i < S.size(); i++) {
+                fout << "(" << S[i].x << "," << S[i].y << ")" << endl;
+            }
+            fout.close();
+            std::cout << "----------------------------------------------------------" << std::endl;
+            std::cout << "divide and conquer for convexhull" << std::endl;
+            start = clock();
             S = convexhull(Q, 0, Q.size()-1);
-            // sort(S);
-            std::cout << "convexhul size: " << S.size() << std::endl;
-            /* fout.open("point3.txt"); */
-            // for (int i = 0; i < S.size(); i++) {
-                // fout << "(" << S[i].x << "," << S[i].y << ")" << endl;
-            // }
-            /* fout.close(); */
+            end = clock();
+            time = (double)(end - start)/CLOCKS_PER_SEC;
+            std::cout << "Total Time:" << time << std::endl;
+            sort(S);
+            std::cout << "convexhull size: " << S.size() << std::endl;
+            fout.open("point3.txt");
+            for (int i = 0; i < S.size(); i++) {
+                fout << "(" << S[i].x << "," << S[i].y << ")" << endl;
+            }
+            fout.close();
             break;
         default:
             std::cout << "invalid input" << std::endl;
@@ -351,7 +382,7 @@ int main(int argc, const char *argv[])
     // for (int i = 0; i < S.size(); i++) {
         // std::cout << S[i].x << "," << S[i].y << std::endl;
     /* } */
-    test(4, 3000);
+    test(4, 200);
     // gen_data(10);
     return 0;
 }

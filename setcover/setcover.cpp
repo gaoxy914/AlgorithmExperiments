@@ -3,6 +3,7 @@
 #include <time.h>
 #include <stdlib.h>
 #include <algorithm>
+#include <fstream>
 extern "C"{
 #include "glpk.h"
 }
@@ -231,21 +232,23 @@ void test(int type, int count) {
     vector<int> X = gen_x(count);
     vector<vector<int> > F = gen_data(X, count), C;
     clock_t start, end;
-    double time;
+    double time, time1, time2;
+    int n;
+    ofstream fout;
     switch (type) {
         case 1:
             start = clock();
             C = greedy_sc(X, F);
             end = clock();
             time = (double)(end - start)/CLOCKS_PER_SEC;
-            std::cout << "Total Time: " << time << "s, C's size : " << C.size() << std::endl;
+            std::cout << "|X| = |F| = " << count << " Total Time: " << time << "s, C's size : " << C.size() << std::endl;
             break;
         case 2:
             start = clock();
             C = lp_sc(X, F);
             end = clock();
             time = (double)(end - start)/CLOCKS_PER_SEC;
-            std::cout << "Total Time: " << time << "s, C's size : " << C.size() << std::endl;
+            std::cout << "|X| = |F| = " << count <<  "Total Time: " << time << "s, C's size : " << C.size() << std::endl;
             break;
         case 3:
             std::cout << "------------------------------------------------------------------" << std::endl;
@@ -280,6 +283,24 @@ void test(int type, int count) {
                 }
                 std::cout << std::endl;
             }
+            break;
+        case 4:
+            fout.open("time.txt");
+            n = 200;
+            for (int i = 1; i <= count; i++) {
+                X = gen_x(i*n);
+                F = gen_data(X, i*n);
+                start = clock();
+                C = greedy_sc(X, F);
+                end = clock();
+                time1 = (double)(end - start)/CLOCKS_PER_SEC;
+                start = clock();
+                C = lp_sc(X, F);
+                end = clock();
+                time2 = (double)(end - start)/CLOCKS_PER_SEC;
+                fout << i*n << " " << time1 << " " << time2 << endl;
+            }
+            fout.close();
             break;
         default:
             std::cout << "invalid input" << std::endl;
@@ -337,6 +358,6 @@ int main(int argc, const char *argv[])
     // it = find(S.begin(), S.end(), 35);
     /* std::cout << *it << std::endl; */
     // std::cout << glp_version() << std::endl;
-    test(3, 200);
+    test(4, 25);
     return 0;
 }

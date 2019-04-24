@@ -265,6 +265,7 @@ void test(int type, int count) {
     vector<point> S;
     clock_t start, end;
     double time;
+    int n;
     ofstream fout;
     switch (type) {
         case 1:
@@ -272,21 +273,21 @@ void test(int type, int count) {
             S = enumerate(Q);
             end = clock();
             time = (double)(end - start)/CLOCKS_PER_SEC;
-            cout << "Total Time:" << time << "s, S's size : " << S.size() << endl;
+            cout << "Q's size : "<< count << "Total Time:" << time << "s, S's size : " << S.size() << endl;
             break;
         case 2:
             start = clock();
             S = graham_scan(Q);
             end = clock();
             time = (double)(end - start)/CLOCKS_PER_SEC;
-            cout << "Total Time:" << time << "s, S's size : " << S.size() << endl;
+            cout << "Q's size : "<< count << "Total Time:" << time << "s, S's size : " << S.size() << endl;
             break;
         case 3:
             start = clock();
             S = convexhull(Q, 0, Q.size()-1);
             end = clock();
             time = (double)(end - start)/CLOCKS_PER_SEC;
-            cout << "Total Time:" << time << "s, S's size : " << S.size() << endl;
+            cout << "Q's size : "<< count << "Total Time:" << time << "s, S's size : " << S.size() << endl;
             break;
         case 4:
             std::cout << "----------------------------------------------------------" << std::endl;
@@ -295,7 +296,7 @@ void test(int type, int count) {
             S = enumerate(Q);
             end = clock();
             time = (double)(end - start)/CLOCKS_PER_SEC;
-            std::cout << "Total Time:" << time << std::endl;
+            std::cout << "Total Time:" << time << "s" << std::endl;
             sort(S);
             std::cout << "convexhull size: " << S.size() << std::endl;
             fout.open("point1.txt");
@@ -310,7 +311,7 @@ void test(int type, int count) {
             S = graham_scan(Q);
             end = clock();
             time = (double)(end - start)/CLOCKS_PER_SEC;
-            std::cout << "Total Time:" << time << std::endl;
+            std::cout << "Total Time:" << time << "s" << std::endl;
             sort(S);
             std::cout << "convexhull size: " << S.size() << std::endl;
             fout.open("point2.txt");
@@ -324,12 +325,43 @@ void test(int type, int count) {
             S = convexhull(Q, 0, Q.size()-1);
             end = clock();
             time = (double)(end - start)/CLOCKS_PER_SEC;
-            std::cout << "Total Time:" << time << std::endl;
+            std::cout << "Total Time:" << time << "s" << std::endl;
             sort(S);
             std::cout << "convexhull size: " << S.size() << std::endl;
             fout.open("point3.txt");
             for (int i = 0; i < S.size(); i++) {
                 fout << "(" << S[i].x << "," << S[i].y << ")" << endl;
+            }
+            fout.close();
+            break;
+        case 5:
+            fout.open("time.txt");
+            n = 1000;
+            double time1, time2;
+            for (int i = 1; i <= count; i++) {
+                Q = gen_data(i*n);
+                start = clock();
+                S = graham_scan(Q);
+                end = clock();
+                time1 = (double)(end - start)/CLOCKS_PER_SEC*1000;
+                start = clock();
+                S = convexhull(Q, 0, Q.size()-1);
+                end = clock();
+                time2 = (double)(end - start)/CLOCKS_PER_SEC*1000;
+                fout << i << " " << time1 << " " << time2 << endl;
+            }
+            fout.close();
+            break;
+        case 6:
+            fout.open("time.txt");
+            n = 50;
+            for (int i = 1; i <= count; i++) {
+                Q = gen_data(i*n);
+                start = clock();
+                S = enumerate(Q);
+                end = clock();
+                time = (double)(end - start)/CLOCKS_PER_SEC;
+                fout << i*n << " " << time << endl;
             }
             fout.close();
             break;
@@ -382,7 +414,7 @@ int main(int argc, const char *argv[])
     // for (int i = 0; i < S.size(); i++) {
         // std::cout << S[i].x << "," << S[i].y << std::endl;
     /* } */
-    test(4, 200);
+    test(6, 12);
     // gen_data(10);
     return 0;
 }
